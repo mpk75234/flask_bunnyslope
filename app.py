@@ -12,6 +12,20 @@ def add_two():
         "z" : z
     }
     return jsonify(retJson), 200
+@app.route('/predict', methods=["POST"])
+def predict():
+    data = request.get_json()
+    num = data["num"]
+    if num % 2 == 0:
+        retJson = {
+          "winner" : "Donald J. Trump"
+        }
+    else:
+        retJson = {
+          "winner" : "Definitely not the American People"
+        }
+    return jsonify(retJson)
+    
 @app.route('/guest_list',methods=["POST"])
 def guest_list():
   data = request.get_json()
