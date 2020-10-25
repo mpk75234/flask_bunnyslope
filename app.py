@@ -11,7 +11,22 @@ def add_two():
     retJson = {
         "z" : z
     }
-    return jsonify(retJson)
+    return jsonify(retJson), 200
+@app.route('/guest_list',methods=["POST"])
+def guest_list():
+  data = request.get_json()
+  guests = ["Mr T", "Michael Jackson", "Eddie Van Halen", "Chris Holmes"]
+  x = data["name"]
+  if x in  guests:
+      retJson = {
+      "status" : "you are on the list, enjoy the party!"
+      }
+  else:
+      retJson = {
+        "status" : "you are not on the list: ACCESS DENIED"
+      }
+  return jsonify(retJson)
+
 
 @app.route('/')
 def hola():
