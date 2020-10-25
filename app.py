@@ -1,6 +1,19 @@
-from flask import Flask,render_template,jsonify
+from flask import Flask,render_template,jsonify,request
 
 app = Flask(__name__)
+
+@app.route('/add_two', methods=["POST"])
+def add_two():
+    data = request.get_json()
+    x = data["x"]
+    y = data["y"]
+    z = x + y
+    retJson = {
+        "z" : z,
+        "slogan" : "quality is never a consideration at CITI app support!",
+        "status" : "++Mike Corbat"
+    }
+    return jsonify(retJson)
 
 @app.route('/')
 def hola():
@@ -29,7 +42,7 @@ def bye():
     'speciesB': 'Greys',
     'galaxy': 'Andromeda',
     'myHome': 'Earth'
-    }
+        }
     return jsonify(retJson)
 
 

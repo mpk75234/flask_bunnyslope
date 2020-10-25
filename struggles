@@ -1,0 +1,1 @@
+10/25 - I kept getting 'Bad Request 405' errors, and sure enough, it was a typo. I had forgotten the @ in my @app.route decorator; Additionally i had misspelled jsonify.
