@@ -9,9 +9,7 @@ def add_two():
     y = data["y"]
     z = x + y
     retJson = {
-        "z" : z,
-        "slogan" : "quality is never a consideration at CITI app support!",
-        "status" : "++Mike Corbat"
+        "z" : z
     }
     return jsonify(retJson)
 
