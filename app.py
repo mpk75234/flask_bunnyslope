@@ -5,11 +5,14 @@ app  = Flask(__name__)
 api = Api(app)
 
 def validatePost(data, function):
-  if(function == "add"):
+  funx = ["add", "subtract", "divide", "multiply"]
+  if(function in funx):
       if "x" not in data or "y" not in data:
           return 301
       else:
           return 200
+  else:
+    return 301
 
 class Add(Resource):
     def post(self):
@@ -36,34 +39,70 @@ class Add(Resource):
 class Subtract(Resource):
     def post(self):
         data = request.get_json()
-        x = data["x"]
-        y = data["y"]
-        x = int(x)
-        y = int(y)
-        ret = x - y
-        retMap = {
-            "Message" : ret,
-            "status" : 200
-        }
-        return jsonify(retMap)
+        status_code = validatePost(data, "subtract")
+        if (status_code != 200):
+            retJson = {
+                "Message" : "Operator Error",
+                "status" : status_code
+            }
+            return jsonify(retJson)
+
+        else:
+            x = data["x"]
+            y = data["y"]
+            x = int(x)
+            y = int(y)
+            ret = x - y
+            retMap = {
+                "Message" : ret,
+                "status" : 200
+            }
+            return jsonify(retMap)
 
 class Multiply(Resource):
     def post(self):
         data = request.get_json()
-        x = data["x"]
-        y = data["y"]
-        x = int(x)
-        y = int(y)
-        ret = x * y
-        retMap = {
-            "Message" : ret,
-            "status" : 200
-        }
-        return jsonify(retMap)
+        status_code = validatePost(data, "multiply")
+        if (status_code != 200):
+            retJson = {
+                "Message" : "Operator Error",
+                "status" : status_code
+            }
+            return jsonify(retJson)
+
+        else:
+            x = data["x"]
+            y = data["y"]
+            x = int(x)
+            y = int(y)
+            ret = x * y
+            retMap = {
+                "Message" : ret,
+                "status" : 200
+            }
+            return jsonify(retMap)
 
 class Divide(Resource):
     def post(self):
         data = request.get_json()
+        status_code = validatePost(data, "divide")
+        if (status_code != 200):
+            retJson = {
+                "Message" : "Operator Error",
+                "status" : status_code
+            }
+            return jsonify(retJson)
+
+        else:
+            x = data["x"]
+            y = data["y"]
+            x = int(x)
+            y = int(y)
+            ret = x / y
+            retMap = {
+                "Message" : ret,
+                "status" : 200
+            }
         x = data["x"]
         y = data["y"]
         x = int(x)
