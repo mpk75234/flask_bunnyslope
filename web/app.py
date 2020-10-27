@@ -14,8 +14,9 @@ app = Flask(__name__)
 api = Api(app)
 
 client = MongoClient("mongodb://db:27017")
-db = client.newDB
+db = client.sentences
 users = db["users"]
+
 
 class Register(Resource):
     def post(self):
@@ -42,52 +43,57 @@ class Register(Resource):
 
 def verifyPw(username, password):
     hashed_pw = users.find({
-    "username":username
+        "username":username
     })[0]["password"]
-
     if bcrypt.hashpw(password.encode('utf-8'), hashed_pw) == hashed_pw:
         return True
     else:
         return False
-def tokenCount(username):
+def verifyTokens(username, password):
     tokens = users.find({
-    "username":username
+        "username":username
     })[0]["tokens"]
+    return tokens
+
 class Store(Resource):
     def post(self):
+        #unpack POST dict
         data = request.get_json()
         username = data["username"]
         password = data["password"]
         sentence = data["sentence"]
-        tokens = data["tokens"]
+        #validate user && password
+        validated_pw = verifyPw(username, password)
+        if not validated_pw:
+            retJson = {
+                "status" : 302,
+                "message" : "please check your password"
+            }
+            return jsonify(retJson)
 
-        #validaet username/Password
-        correct_pw = verifyPw(username, password)
-        if not correct_pw:
+        #verify tokens
+        validate_tokens = verifyTokens(username, password)
+        if validate_tokens <=0:
             retJson = {
-            "status" : 403,
-            "message" : "ACCESS DENIED  check your password"
+                "status" : 302,
+                "message" : "you do not have enough tokens"
             }
             return jsonify(retJson)
-        tokens = tokenCount(username)
-        if tokens <= 0:
-            retJson = {
-            "status" : 302,
-            "message" : "you do not have enough tokens for this opeation:",
-            "tokens" : tokens
-            }
-            return jsonify(retJson)
+
+        #store sentence and return 200 OK
         users.update({
-            "username": username
-        }, {
+            "username":username
+        },{
             "$set":{"sentence":sentence,
-                    "toekns":tokens-1}
+                    "tokens":validate_tokens-1 }
         })
+
         retJson = {
-        "status":200,
-        "message": "sentence saved successfully"
+            "status" : 200,
+            "message" : "sentence updated!"
         }
         return jsonify(retJson)
+
 
 
 api.add_resource(Register, '/register')
