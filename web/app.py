@@ -1,3 +1,4 @@
+'''
 from flask import Flask, jsonify , request
 from flask_restful import Api,Resource
 from pymongo import MongoClient
@@ -17,7 +18,6 @@ class Visit(Resource):
         new_num = prev_num + 1
         UserNum.update({}, {"$set": {"num_of_users":new_num}})
         return str("Hello user number " + str(new_num))
-'''
 def validatePost(data, function):
   funx = ["add", "subtract", "divide", "multiply"]
   if(function in funx):
@@ -137,8 +137,8 @@ api.add_resource(Add, "/add")
 api.add_resource(Subtract, "/subtract")
 api.add_resource(Multiply, "/multiply")
 api.add_resource(Divide, "/divide")
-'''
 api.add_resource(Visit, "/hello")
+'''
 
 if(__name__)=="__main__":
     app.run(host="0.0.0.0")
