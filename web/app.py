@@ -81,7 +81,7 @@ class Store(Resource):
             return jsonify(retJson)
 
         #store sentence and return 200 OK
-        users.update({
+        users.update_one({
             "username":username
         },{
             "$set":{"sentence":sentence,
@@ -94,10 +94,46 @@ class Store(Resource):
         }
         return jsonify(retJson)
 
+class Get(Resource):
+    def get(self):
+        data = request.get_json()
+        username = data["username"]
+        password = data["password"]
+        #valid8 username && password
+        validated_pw = verifyPw(username, password)
+        if not validated_pw:
+            retJson = {
+                "status" : 302,
+                "message" : "please check your password"
+            }
+            return jsonify(retJson)
+        validate_tokens = verifyTokens(username, password)
+        if validate_tokens <=0:
+            retJson = {
+                "status" : 302,
+                "message" : "you do not have enough tokens"
+            }
+            return jsonify(retJson)
+        sentence = users.find({
+            "username":username
+        })[0]["sentence"]
+
+        retJson = {
+            "status" : 200,
+            "message" : "here be yo sentence:",
+            "sentence" : sentence
+        }
+
+        return jsonify(retJson)
+
+
+
+
 
 
 api.add_resource(Register, '/register')
 api.add_resource(Store, '/store')
+api.add_resource(Get, '/get')
 
 if(__name__)=="__main__":
     app.run(host='0.0.0.0')
